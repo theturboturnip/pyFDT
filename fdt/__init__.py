@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+from typing import Generator, Tuple
 
 from .header import Header, DTB_BEGIN_NODE, DTB_END_NODE, DTB_PROP, DTB_END, DTB_NOP
 from .items import new_property, Property, PropBytes, PropWords, PropStrings, PropIncBin, Node
@@ -230,7 +231,7 @@ class FDT:
 
         return items
 
-    def walk(self, path: str = '', relative: bool = False) -> list:
+    def walk(self, path: str = '', relative: bool = False) -> Generator[Tuple[str, Node], None, None]:
         """ 
         Walk trough nodes and return relative/absolute path with list of sub-nodes and properties
         
@@ -247,7 +248,7 @@ class FDT:
             current_path = current_path.replace('//', '/')
             if path and relative:
                 current_path = current_path.replace(path, '').lstrip('/')
-            yield current_path, node.nodes, node.props
+            yield current_path, node
             if not all_nodes:
                 break
             node = all_nodes.pop()
